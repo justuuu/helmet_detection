@@ -113,7 +113,7 @@ def load_model():
 st.markdown("""
 <div class="header-box">
     <h1>🪖 Sistem Deteksi Helm Pengendara Motor</h1>
-    <p>Simulasi CCTV Persimpangan — Computer Vision Mini Capstone</p>
+    <p>Computer Vision Mini Capstone</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -122,7 +122,7 @@ st.markdown("""
 # ============================================================
 with st.sidebar:
     st.markdown("### ⚙️ Pengaturan")
-    conf_threshold = st.slider("Confidence Threshold", 0.1, 0.9, 0.5, 0.05,
+    conf_threshold = st.slider("Confidence Threshold", 0.4, 0.9, 0.6, 0.05,
                                help="Semakin tinggi = semakin ketat seleksi deteksi")
 
     st.markdown("---")
@@ -185,10 +185,11 @@ with tab1:
 
         # Deteksi
         with st.spinner("🔍 Mendeteksi..."):
+            img_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
             results = model.predict(img_np, conf=conf_threshold, verbose=False)
 
         r = results[0]
-        annotated = cv2.cvtColor(r.plot(), cv2.COLOR_BGR2RGB)
+        annotated = r.plot()[..., ::-1]
 
         with col2:
             st.markdown(f"**Hasil Deteksi** (conf={conf_threshold})")
