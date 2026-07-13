@@ -29,7 +29,7 @@ if uploaded_file is not None:
         st.image(image, use_container_width=True)
 
     with st.spinner("Mendeteksi..."):
-        results = model.predict(np.array(image), conf=conf_threshold)
+        results = model.predict(image, conf=conf_threshold)
         annotated = results[0].plot()[:, :, ::-1]  # BGR -> RGB
 
     with col2:
