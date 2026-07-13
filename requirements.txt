@@ -1,3 +1,0 @@
-ultralytics
-gradio
-opencv-python-headless
