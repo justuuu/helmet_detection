@@ -19,7 +19,7 @@ model = load_model()
 st.title("Deteksi penggunaan helm — YOLOv8")
 st.write("Deteksi apakah orang dalam gambar/video menggunakan helm atau tidak.")
 
-conf_threshold = st.slider("Confidence threshold", min_value=0.1, max_value=1.0, value=0.5, step=0.05)
+conf_threshold = st.slider("Confidence threshold", min_value=0.1, max_value=0.5, value=0.25, step=0.05)
 
 
 def show_detection_details(results):
