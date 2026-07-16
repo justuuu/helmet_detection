@@ -19,7 +19,7 @@ model = load_model()
 st.title("Deteksi penggunaan helm — YOLOv8")
 st.write("Deteksi apakah orang dalam gambar/video menggunakan helm atau tidak.")
 
-conf_threshold = st.slider("Confidence threshold", min_value=0.1, max_value=0.5, value=0.25, step=0.05)
+conf_threshold = st.slider("Confidence threshold", min_value=0.1, max_value=1.0, value=0.5, step=0.05)
 
 
 def show_detection_details(results):
@@ -60,20 +60,33 @@ with tab_upload:
 
 # ---------- TAB 2: Kamera ----------
 with tab_camera:
-    st.caption("Klik tombol di bawah untuk mengaktifkan kamera dan ambil foto.")
-    camera_photo = st.camera_input("Ambil foto", key="camera_img")
+    st.caption("Klik tombol di bawah untuk mengaktifkan kamera.")
 
-    if camera_photo is not None:
-        image = Image.open(camera_photo).convert("RGB")
+    if "camera_active" not in st.session_state:
+        st.session_state.camera_active = False
 
-        with st.spinner("Mendeteksi..."):
-            results = model.predict(image, conf=conf_threshold)
-            annotated = results[0].plot()[:, :, ::-1]  # BGR -> RGB
+    if not st.session_state.camera_active:
+        if st.button("Aktifkan kamera", key="btn_activate_camera"):
+            st.session_state.camera_active = True
+            st.rerun()
+    else:
+        if st.button("Matikan kamera", key="btn_deactivate_camera"):
+            st.session_state.camera_active = False
+            st.rerun()
 
-        st.subheader("Hasil deteksi")
-        st.image(annotated, use_container_width=True)
+        camera_photo = st.camera_input("Ambil foto", key="camera_img")
 
-        show_detection_details(results)
+        if camera_photo is not None:
+            image = Image.open(camera_photo).convert("RGB")
+
+            with st.spinner("Mendeteksi..."):
+                results = model.predict(image, conf=conf_threshold)
+                annotated = results[0].plot()[:, :, ::-1]  # BGR -> RGB
+
+            st.subheader("Hasil deteksi")
+            st.image(annotated, use_container_width=True)
+
+            show_detection_details(results)
 
 # ---------- TAB 3: Upload video ----------
 with tab_video:
